@@ -11,7 +11,7 @@ type IndexController struct {
 
 func (this *IndexController) Get() {
 	this.Data["blogs"] = models.GetAll()
-	log.Debug("debug", this.Data["blogs"])
+	//log.Debug("debug", this.Data["blogs"])
 	this.Layout = "layout.tpl"
 	this.TplNames = "index.tpl"
 }

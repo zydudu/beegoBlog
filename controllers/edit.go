@@ -21,11 +21,10 @@ func (this *EditController) Get() {
 
 func (this *EditController) Post() {
 	inputs := this.Input()
-	var blog models.Blog
-	blog.Id, _ = strconv.Atoi(inputs.Get("id"))
-	blog.Title = inputs.Get("title")
-	blog.Content = inputs.Get("content")
-	blog.Modified = time.Now()
-	models.SaveBlog(blog)
+	//var blog models.Blog
+	//blog.Id, _ = strconv.Atoi(inputs.Get("id"))
+	models.UpdateBlog(inputs.Get("id"), "title", inputs.Get("title"))
+	models.UpdateBlog(inputs.Get("id"), "content", inputs.Get("content"))
+	models.UpdateBlog(inputs.Get("id"), "modified", time.Now())
 	this.Ctx.Redirect(302, "/")
 }

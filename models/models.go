@@ -1,10 +1,18 @@
 package models
 
 import (
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
+	"strconv"
 	"time"
 )
+
+var log = logs.NewLogger(10000)
+
+func init() {
+	log.SetLogger("console", "")
+}
 
 type Blog struct {
 	Id              int `PK`
@@ -65,7 +73,7 @@ func GetBlog(id int) (blog Blog) {
 func SaveBlog(blog Blog) (bg Blog) {
 	db := orm.NewOrm()
 	now := time.Now()
-	db.Raw("insert into bb_posts values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+	db.Raw("insert into bb_posts values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", blog.Id,
 		blog.Author, now, now, blog.Content, blog.Title, blog.Excerpt, blog.Status, blog.CommentSatus, blog.PingStatus, blog.Password,
 		blog.Name, blog.ToPing, blog.Pinged, now, now, blog.ContentFiltered, blog.Parent, blog.Guid, blog.MenuOrder,
 		blog.Title, blog.MimeType, blog.CommentCount).Exec()
@@ -75,5 +83,18 @@ func SaveBlog(blog Blog) (bg Blog) {
 func DelBlog(blog Blog) {
 	db := orm.NewOrm()
 	db.Raw("delete FROM bb_posts WHERE id=?", blog.Id).Exec()
+	return
+}
+func UpdateBlog(id string, key string, value interface{}) {
+	db := orm.NewOrm()
+	if val, ok := value.(int); ok {
+		sql := "update bb_posts set " + key + "='" + strconv.Itoa(val) + "' where id=" + id
+		log.Debug("debug", sql)
+		db.Raw(sql).Exec()
+	} else if val, ok := value.(string); ok {
+		sql := "update bb_posts set " + key + "='" + string(val) + "' where id=" + id
+		log.Debug("debug", sql)
+		db.Raw(sql).Exec()
+	}
 	return
 }
