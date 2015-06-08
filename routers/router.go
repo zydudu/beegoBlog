@@ -17,4 +17,7 @@ func init() {
 	beego.Router("/delete/:id([0-9]+)", &controllers.DeleteController{})
 	//编辑博文
 	beego.Router("/edit/:id([0-9]+)", &controllers.EditController{})
+
+	beego.Router("/login", &controllers.LoginController{})
+
 }

@@ -7,10 +7,41 @@ import (
 )
 
 type Blog struct {
-	Id      int `PK`
-	Title   string
-	Content string
-	Created time.Time
+	Id              int `PK`
+	Author          int
+	Date            time.Time
+	DateGmt         time.Time
+	Content         string
+	Title           string
+	Excerpt         string
+	Status          string
+	CommentSatus    string
+	PingStatus      string
+	Password        string
+	Name            string
+	ToPing          string
+	Pinged          string
+	Modified        time.Time
+	ModifiedGmt     time.Time
+	ContentFiltered string
+	Parent          int
+	Guid            string
+	MenuOrder       int
+	Type            string
+	MimeType        string
+	CommentCount    int
+}
+type User struct {
+	Id            int `PK`
+	Login         string
+	Pass          string
+	NiceName      string
+	Email         string
+	Url           string
+	Registered    time.Time
+	ActivationKey string
+	Status        int
+	DisplayName   string
 }
 
 func init() {
@@ -21,25 +52,28 @@ func init() {
 
 func GetAll() (blogs []Blog) {
 	db := orm.NewOrm()
-	db.Raw("SELECT * FROM blog ").QueryRows(&blogs)
-
+	db.Raw("SELECT * FROM bb_posts ").QueryRows(&blogs)
 	return blogs
 }
 
 func GetBlog(id int) (blog Blog) {
 	db := orm.NewOrm()
-	db.Raw("SELECT * FROM blog WHERE id=?", id).QueryRow(&blog)
+	db.Raw("SELECT * FROM bb_posts WHERE id=?", id).QueryRow(&blog)
 	return blog
 }
 
 func SaveBlog(blog Blog) (bg Blog) {
 	db := orm.NewOrm()
-	db.Raw("insert into blog values(?,?,?,?)", blog.Id, blog.Title, blog.Content, blog.Created).Exec()
+	now := time.Now()
+	db.Raw("insert into bb_posts values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+		blog.Author, now, now, blog.Content, blog.Title, blog.Excerpt, blog.Status, blog.CommentSatus, blog.PingStatus, blog.Password,
+		blog.Name, blog.ToPing, blog.Pinged, now, now, blog.ContentFiltered, blog.Parent, blog.Guid, blog.MenuOrder,
+		blog.Title, blog.MimeType, blog.CommentCount).Exec()
 	return blog
 }
 
 func DelBlog(blog Blog) {
 	db := orm.NewOrm()
-	db.Raw("delete FROM blog WHERE id=?", blog.Id).Exec()
+	db.Raw("delete FROM bb_posts WHERE id=?", blog.Id).Exec()
 	return
 }
